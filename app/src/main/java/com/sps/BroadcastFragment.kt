@@ -22,7 +22,7 @@ class BroadcastFragment : BaseFragment<FragmentBroadcastBinding>() {
                 != PackageManager.PERMISSION_GRANTED
             ) {
                 // If any permissions are missing we want to just request them all.
-                ActivityCompat.requestPermissions(requireActivity(), requiredPermissions, 10000)
+                requestPermissions(requiredPermissions, 10000)
                 break
             }
         }
