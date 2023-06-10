@@ -24,24 +24,9 @@ class LiveFragment : BaseFragment<FragmentLiveBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
 
-    override fun onResume() {
-        super.onResume()
-//        println("HHHH onResume $index")
-        binding.recorder.play(Uri.parse(url))
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-//        println("HHHH onPause $index")
-        binding.recorder.pause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        println("HHHH onDestroy $index")
-        binding.recorder.endBroadcast()
+        binding.recorder
+            .setUri(Uri.parse(url))
+            .setLifecycleOwner(viewLifecycleOwner)
     }
 }

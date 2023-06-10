@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.machinarium.sbs.model.stream.StreamItem
@@ -20,7 +22,7 @@ class PagerFragment : BaseFragment<FragmentPagerBinding>() {
         binding.pager.offscreenPageLimit = 1
 
         arguments?.getParcelable<TransferItem>(KEY_ITEM)?.let { tItem ->
-            val pagerAdapter = ScreenSlidePagerAdapter(requireActivity(), tItem.list)
+            val pagerAdapter = ScreenSlidePagerAdapter(this, tItem.list)
             binding.pager.adapter = pagerAdapter
 
             binding.pager.post {
@@ -31,9 +33,9 @@ class PagerFragment : BaseFragment<FragmentPagerBinding>() {
 
 
     private inner class ScreenSlidePagerAdapter(
-        fa: FragmentActivity,
+        fragment: Fragment,
         val list: ArrayList<StreamItem>
-    ) : FragmentStateAdapter(fa) {
+    ) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = list.size
 
         override fun createFragment(position: Int): Fragment {

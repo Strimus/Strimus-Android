@@ -4,13 +4,18 @@ import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.amazonaws.ivs.player.*
 import com.amazonaws.ivs.player.Player.Listener
 
 
-class SPSPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class SPSPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
+    DefaultLifecycleObserver {
     private val playerView: PlayerView
     private val player: Player
+
+    private var streamUri: Uri? = null
 
     init {
         // Create a player instance
@@ -59,7 +64,7 @@ class SPSPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     }
 
     fun play(uri: Uri) {
-        player.load(uri)
+
         player.play()
     }
 
@@ -69,6 +74,41 @@ class SPSPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     fun endBroadcast() {
         removeAllViews()
+        player.release()
+    }
+
+    fun setUri(uri: Uri): SPSPlayer {
+        streamUri = uri
+        return this
+    }
+
+    fun setLifecycleOwner(lifecycleOwner: LifecycleOwner) {
+        lifecycleOwner.lifecycle.addObserver(this)
+    }
+
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
+        streamUri?.let {
+            player.load(it)
+        }
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        player.play()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        player.pause()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+
+        if (player.state == Player.State.PLAYING) {
+            player.pause()
+        }
         player.release()
     }
 }
