@@ -7,13 +7,13 @@ import com.machinarium.sbs.response.basics.ConfigResponse
 import com.machinarium.sbs.response.stream.CreateStreamResponse
 import com.machinarium.sbs.response.stream.StreamListResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
-
-    @POST("auth")
-    suspend fun auth(@Body request: AuthRequest): AuthResponse
 
     @GET("config")
     suspend fun getConfig(): ConfigResponse
@@ -23,4 +23,7 @@ interface ApiService {
 
     @GET("streams")
     suspend fun getStreams(): StreamListResponse
+
+    @DELETE("stream/{id}")
+    suspend fun stopStream(@Path("id") streamId: Long)
 }

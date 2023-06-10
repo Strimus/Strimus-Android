@@ -15,7 +15,7 @@ class PagerFragment : BaseFragment<FragmentPagerBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.pager.setPageTransformer(ZoomOutPageTransformer())
+        //binding.pager.setPageTransformer(ZoomOutPageTransformer())
         binding.pager.orientation = ViewPager2.ORIENTATION_VERTICAL
         binding.pager.offscreenPageLimit = 1
 

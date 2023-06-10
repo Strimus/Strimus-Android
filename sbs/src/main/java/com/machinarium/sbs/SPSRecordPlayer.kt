@@ -19,10 +19,11 @@ class SPSRecordPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(cont
 //    private val broadcastListener: BroadcastSession.Listener
 
     private var recorder: SPSRecordInterface? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     @RequiresPermission(allOf = [RECORD_AUDIO, CAMERA])
     fun start() {
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             val response = SPS.getInstance().createStream()
             response?.apply {
                 if (success) {
@@ -39,12 +40,15 @@ class SPSRecordPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(cont
     }
 
     fun stop() {
-//        broadcastSession.stop()
+        recorder?.stop()
     }
 
     fun endBroadcast() {
         removeAllViews()
-//        broadcastSession.release()
+        recorder?.end()
+        coroutineScope.launch {
+            SPS.getInstance().stopStream()
+        }
     }
 
     init {

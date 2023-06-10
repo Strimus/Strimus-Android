@@ -26,6 +26,10 @@ class SPSManager {
     private var retrofit: Retrofit? = null
     private var uniqueId: String = ""
 
+    private var streamId: Long? = null
+
+    private val service by lazy { retrofit?.create(ApiService::class.java) }
+
     fun initialize(token: String, key: String, uniqueId: String = "") {
         this.uniqueId = uniqueId
         retrofit = Retrofit.Builder()
@@ -37,7 +41,7 @@ class SPSManager {
 
         coroutineScope.launch {
             try {
-                val response = retrofit?.create(ApiService::class.java)?.getConfig()
+                val response = service?.getConfig()
                 response?.apply {
                     if (success && code == 200) {
                         config = data
@@ -80,16 +84,29 @@ class SPSManager {
             source,
             StreamData(this.uniqueId, "Test Stream", "https://picsum.photos/500/500")
         )
-        return retrofit?.create(ApiService::class.java)?.createStream(request)
+        return service?.createStream(request).also {
+            streamId = it?.data?.id
+        }
     }
 
     suspend fun getStreams(onLisReceived: (List<StreamItem>) -> Unit) {
         coroutineScope.launch {
-            val response = retrofit?.create(ApiService::class.java)?.getStreams()
+            val response = service?.getStreams()
             response?.apply {
                 if (success && code == 200) {
                     onLisReceived.invoke(data)
                 }
+            }
+        }
+    }
+
+    suspend fun stopStream() {
+        val id = streamId ?: return
+        coroutineScope.launch {
+            try {
+                service?.stopStream(id)
+            } catch (e: Exception) {
+                Log.e(SPS.TAG, e.message ?: "")
             }
         }
     }
