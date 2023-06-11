@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.sps.HomeFragment"
+        android:name="com.sps.home.HomeFragment"
         android:label="HomeFragment">
         <action
             android:id="@+id/navigateBroadcast"

@@ -7,6 +7,7 @@ import com.machinarium.sbs.model.init.Config
 import com.machinarium.sbs.model.stream.StreamData
 import com.machinarium.sbs.model.stream.StreamItem
 import com.machinarium.sbs.network.ApiService
+import com.machinarium.sbs.network.StreamRepositoryImpl
 import com.machinarium.sbs.request.AuthRequest
 import com.machinarium.sbs.request.CreateStreamRequest
 import com.machinarium.sbs.response.basics.AuthResponse
@@ -29,6 +30,7 @@ class SPSManager {
     private var streamId: Long? = null
 
     private val service by lazy { retrofit?.create(ApiService::class.java) }
+    private val streamRepository by lazy { StreamRepositoryImpl(service!!) }
 
     fun initialize(token: String, key: String, uniqueId: String = "") {
         this.uniqueId = uniqueId
@@ -89,16 +91,8 @@ class SPSManager {
         }
     }
 
-    suspend fun getStreams(onLisReceived: (List<StreamItem>) -> Unit) {
-        coroutineScope.launch {
-            val response = service?.getStreams()
-            response?.apply {
-                if (success && code == 200) {
-                    onLisReceived.invoke(data)
-                }
-            }
-        }
-    }
+    suspend fun getStreams() =
+        streamRepository.getStreams()
 
     suspend fun stopStream() {
         val id = streamId ?: return

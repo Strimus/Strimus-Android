@@ -4,10 +4,13 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class StreamItem(
+data class StreamItem(
     val streamData: StreamData,
     val url: String,
     val type: String,
     val id: Int,
     val videos: ArrayList<Video>?,
-): Parcelable
+) : Parcelable {
+
+    fun isLiveStream() = type == "live"
+}

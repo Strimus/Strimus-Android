@@ -34,7 +34,7 @@ class PagerFragment : BaseFragment<FragmentPagerBinding>() {
 
     private inner class ScreenSlidePagerAdapter(
         fragment: Fragment,
-        val list: ArrayList<StreamItem>
+        val list: List<StreamItem>
     ) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = list.size
 
