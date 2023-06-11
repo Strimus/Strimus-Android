@@ -10,7 +10,9 @@ import com.amazonaws.ivs.player.*
 import com.amazonaws.ivs.player.Player.Listener
 
 
-class SPSPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
+class SPSPlayer @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : FrameLayout(context, attrs),
     DefaultLifecycleObserver {
     private val playerView: PlayerView
     private val player: Player
@@ -20,6 +22,7 @@ class SPSPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     init {
         // Create a player instance
         playerView = PlayerView(context)
+        playerView.resizeMode = ResizeMode.ZOOM
         addView(playerView)
         player = playerView.player
         player.addListener(object : Listener() {

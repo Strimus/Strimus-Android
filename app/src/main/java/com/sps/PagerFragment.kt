@@ -3,9 +3,6 @@ package com.sps
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.machinarium.sbs.model.stream.StreamItem
@@ -42,7 +39,7 @@ class PagerFragment : BaseFragment<FragmentPagerBinding>() {
             val url = if (list[position].videos.isNullOrEmpty()) {
                 list[position].url
             } else {
-                list[position].videos?.get(0)?.url ?: ""
+                list[position].videos?.firstOrNull()?.url
             }
             return LiveFragment.newInstance(url, position)
         }
