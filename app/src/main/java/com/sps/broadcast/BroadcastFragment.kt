@@ -1,4 +1,4 @@
-package com.sps
+package com.sps.broadcast
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -7,9 +7,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.sps.BaseFragment
+import com.sps.R
 import com.sps.databinding.FragmentBroadcastBinding
 
 class BroadcastFragment : BaseFragment<FragmentBroadcastBinding>() {
+
+    private val args by lazy {
+        BroadcastFragmentArgs.fromBundle(requireArguments())
+    }
+
     override fun getLayoutRes() = R.layout.fragment_broadcast
 
     private val requiredPermissions =
@@ -60,7 +67,7 @@ class BroadcastFragment : BaseFragment<FragmentBroadcastBinding>() {
                 Manifest.permission.RECORD_AUDIO
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            binding.recorder.start()
+            binding.recorder.start(args.source)
         }
     }
 

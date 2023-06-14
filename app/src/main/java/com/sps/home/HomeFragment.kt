@@ -2,6 +2,7 @@ package com.sps.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,6 +16,7 @@ import com.sps.home.adapter.StreamListAdapter
 import com.sps.PagerFragment
 import com.sps.R
 import com.sps.TransferItem
+import com.sps.broadcast.broadcastoptions.BroadcastOptionsBottomSheetDialogFragment
 import com.sps.databinding.FragmentHomeBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,7 +38,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
 
         binding.startBroadcast.setOnClickListener {
-            findNavController().navigate(R.id.navigateBroadcast)
+            checkBroadcastOptionsAndNavigate()
         }
 
         viewModel.loadStreamList()
@@ -48,6 +50,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                         adapter.submitList(it.listItems)
                     }
                 }
+            }
+        }
+    }
+
+    private fun checkBroadcastOptionsAndNavigate() {
+        val avaibleSources = SPS.getInstance().getAvailableBroadcastSources()
+        val sourceSize = avaibleSources.size
+
+
+        when (sourceSize) {
+            0 -> {
+                Toast.makeText(requireContext(), "No broadcast sources found", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            1 -> {
+                val source = avaibleSources.firstOrNull() ?: return
+                findNavController().navigate(HomeFragmentDirections.navigateBroadcast(source))
+            }
+
+            else -> {
+                BroadcastOptionsBottomSheetDialogFragment.newInstance {
+                    findNavController().navigate(HomeFragmentDirections.navigateBroadcast(it))
+                }.show(childFragmentManager, BroadcastOptionsBottomSheetDialogFragment.TAG)
             }
         }
     }

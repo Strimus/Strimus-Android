@@ -4,13 +4,11 @@ import android.util.Log
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.machinarium.sbs.model.init.Config
+import com.machinarium.sbs.model.init.ConfigItem
 import com.machinarium.sbs.model.stream.StreamData
-import com.machinarium.sbs.model.stream.StreamItem
 import com.machinarium.sbs.network.ApiService
 import com.machinarium.sbs.network.StreamRepositoryImpl
-import com.machinarium.sbs.request.AuthRequest
 import com.machinarium.sbs.request.CreateStreamRequest
-import com.machinarium.sbs.response.basics.AuthResponse
 import com.machinarium.sbs.response.stream.CreateStreamResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,10 +78,9 @@ class SPSManager {
         return okHttpClientBuilder.build()
     }
 
-    suspend fun createStream(): CreateStreamResponse? {
-        val source = config?.configs?.find { configItem -> configItem.default }?.alias ?: "aws"
+    suspend fun createStream(source : ConfigItem): CreateStreamResponse? {
         val request = CreateStreamRequest(
-            source,
+            source.alias,
             StreamData(this.uniqueId, "Test Stream", "https://picsum.photos/500/500")
         )
         return service?.createStream(request).also {
@@ -104,6 +101,8 @@ class SPSManager {
             }
         }
     }
+
+    fun getAvailableBroadcastSources() = config?.configs.orEmpty()
 
     companion object {
         private const val TOKEN = "token"

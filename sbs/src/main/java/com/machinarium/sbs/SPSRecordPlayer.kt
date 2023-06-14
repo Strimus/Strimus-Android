@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.RequiresPermission
 import com.amazonaws.ivs.broadcast.*
+import com.machinarium.sbs.model.init.ConfigItem
 import com.machinarium.sbs.recorder.AWSRecorder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +23,9 @@ class SPSRecordPlayer(context: Context, attrs: AttributeSet?) : FrameLayout(cont
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     @RequiresPermission(allOf = [RECORD_AUDIO, CAMERA])
-    fun start() {
+    fun start(source : ConfigItem) {
         coroutineScope.launch {
-            val response = SPS.getInstance().createStream()
+            val response = SPS.getInstance().createStream(source)
             response?.apply {
                 if (success) {
                     recorder = AWSRecorder(this@SPSRecordPlayer)
